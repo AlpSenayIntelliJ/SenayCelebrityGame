@@ -40,7 +40,17 @@ public class CelebrityGame {
 	 *         spaces.
 	 */
 	public boolean processGuess(String guess) {
-		return false; // stub
+		String trimmedGuess = guess.trim();
+		if (trimmedGuess.equalsIgnoreCase(gameCelebrity.getAnswer())) {
+			celebGameList.remove(0);
+			if (celebGameList.size() >= 1) {
+				gameCelebrity = celebGameList.get(0);
+			} else {
+				gameCelebrity = new Celebrity("", "");
+			}
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -50,7 +60,7 @@ public class CelebrityGame {
 	 */
 	public void play() {
 		if (celebGameList != null && celebGameList.size() >= 1) {
-			celebGameList.add(0, gameCelebrity);
+			gameCelebrity = celebGameList.get(0);
 			gameWindow.replaceScreen("GAME");
 		}
 	}

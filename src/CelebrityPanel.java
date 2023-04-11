@@ -10,7 +10,7 @@ import java.awt.event.ActionEvent;
  * @author cody.henrichsen
  * @version 2.9 18/09/2018 Adjusted the listener functionality.
  */
-public class CelebrityPanel extends JPanel {
+public class CelebrityPanel extends JPanel implements ActionListener {
   
   /**
    * The button pressed when making a guess.
@@ -178,7 +178,7 @@ public class CelebrityPanel extends JPanel {
    * Attaches listeners to the GUI components of the program
    */
   private void setupListeners() {
-
+    guessButton.addActionListener(this);
   }
   
   /**
@@ -188,6 +188,16 @@ public class CelebrityPanel extends JPanel {
    */
   private void timerFires() {
 
+  }
+
+  public void actionPerformed(ActionEvent ae) {
+    Object source = ae.getSource();
+    JButton clickedButton = (JButton) source;
+    String buttonText = clickedButton.getText();
+
+    if (buttonText.equals("Submit guess")) {
+      updateScreen();
+    }
   }
   
   /**
@@ -205,6 +215,21 @@ public class CelebrityPanel extends JPanel {
    * to provide the same functionality.
    */
   private void updateScreen() {
-
+    String guess = guessField.getText();
+    clueArea.append("\nYou guessed: " + guess + "\n");
+    if (controller.processGuess(guess)) {
+      clueArea.setBackground(Color.CYAN);
+      clueArea.append(success);
+      clueArea.append(controller.sendClue());
+    } else {
+      clueArea.setBackground(Color.WHITE);
+      clueArea.append(tryAgain);
+      clueArea.append(controller.sendClue());
+    }
+    if (controller.getCelebrityGameSize() == 0) {
+      clueArea.append("\nNo more celebrities to guess.");
+      guessButton.setEnabled(false);
+      guessField.setEnabled(false);
+    }
   }
 }
