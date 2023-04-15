@@ -101,7 +101,7 @@ public class CelebrityPanel extends JPanel implements ActionListener {
     panelLayout = new SpringLayout();
     guessLabel = new JLabel("Guess:");
     staticTimerLabel = new JLabel("Time remaining: ");
-    dynamicTimerLabel = new JLabel("60");
+    dynamicTimerLabel = new JLabel("30");
     guessButton = new JButton("Submit guess");
     resetButton = new JButton("Start again");
     clueArea = new JTextArea("", 30, 20);
@@ -110,6 +110,7 @@ public class CelebrityPanel extends JPanel implements ActionListener {
     success = "You guessed correctly!!! \nNext Celebrity clue is: ";
     tryAgain = "You have chosen poorly, try again!\nThe clue is: ";
     seconds = 60;
+    countdownTimer = new Timer(1000, null);
 
     setupPanel();
     setupLayout();
@@ -179,6 +180,8 @@ public class CelebrityPanel extends JPanel implements ActionListener {
    */
   private void setupListeners() {
     guessButton.addActionListener(this);
+    countdownTimer.addActionListener(this);
+    countdownTimer.start();
   }
   
   /**
@@ -187,16 +190,25 @@ public class CelebrityPanel extends JPanel implements ActionListener {
    * the end.
    */
   private void timerFires() {
-
+    seconds--;
+    dynamicTimerLabel.setText("" + seconds);
+    if (seconds == 0) {
+      countdownTimer.stop();
+      staticTimerLabel.setText("Time's up!");
+    }
   }
 
   public void actionPerformed(ActionEvent ae) {
     Object source = ae.getSource();
-    JButton clickedButton = (JButton) source;
-    String buttonText = clickedButton.getText();
+    if (source instanceof Timer) {
+      timerFires();
+    } else if (source instanceof JButton) {
+      JButton clickedButton = (JButton) source;
+      String buttonText = clickedButton.getText();
 
-    if (buttonText.equals("Submit guess")) {
-      updateScreen();
+      if (buttonText.equals("Submit guess")) {
+        updateScreen();
+      }
     }
   }
   
